@@ -3,6 +3,7 @@ import { ref } from "vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputNumber from "primevue/inputnumber";
+import Divider from "primevue/divider";
 
 const visible = ref(false);
 </script>
@@ -23,6 +24,7 @@ const visible = ref(false);
         </div> -->
         <h1 class="modalTitle">How many people?</h1>
       </template>
+      <Divider />
       <!-- <span class="text-surface-500 dark:text-surface-400 block mb-8"
         >Update your information.</span
       > -->
@@ -42,6 +44,8 @@ const visible = ref(false);
           fluid
         />
       </div>
+
+      <Divider />
       <template #footer>
         <div class="flex items-center justify-end gap-x-[8px]">
           <Button
@@ -49,11 +53,13 @@ const visible = ref(false);
             @click="visible = false"
             autofocus
             :style="{
-              height: 40,
+              height: 30,
               background: '#EEEEEE',
               borderRadius: 5,
             }"
-            ><span :style="{ padding: '12px 22px' }">Cancel</span>
+            ><span :style="{ padding: '12px 22px', color: '#555555' }"
+              >Cancel</span
+            >
           </Button>
           <Button
             label="Save"
