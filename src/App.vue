@@ -4,27 +4,32 @@ import { onMounted, ref } from "vue";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ColumnGroup from "primevue/columngroup"; // optional
-import Row from "primevue/row";
+import Toast from "primevue/toast";
 import { PeopleService } from "@/data/PeopleService.ts";
 import CreateEntryDialog from "@/components/CreateEntryDialog/index.vue";
+import { usePeopleStore } from "./store/people";
 
+const people = usePeopleStore();
 const visible = ref(false);
+
+const peopleData = ref(people.returnPeopleList);
 
 // onMounted(() => {
 //   PeopleService.getProductsMini().then((data) => (products.value = data));
 // });
 
+console.log(peopleData.value);
+
 const columns = ref([
-  { field: "code", header: "Code" },
   { field: "name", header: "Name" },
-  { field: "category", header: "Category" },
-  { field: "quantity", header: "Quantity" },
+  { field: "potatoes", header: "Potatoes" },
+  { field: "email", header: "Email" },
 ]);
-const products = ref(PeopleService);
+// const products = ref(PeopleService);
 
 const onColReorder = () => {};
 const onRowReorder = (event) => {
-  products.value = event.value;
+  peopleData.value = event.value;
 };
 </script>
 
@@ -36,7 +41,7 @@ const onRowReorder = (event) => {
   </div>
 
   <DataTable
-    :value="products"
+    :value="peopleData"
     :reorderableColumns="true"
     @columnReorder="onColReorder"
     @rowReorder="onRowReorder"
@@ -50,6 +55,8 @@ const onRowReorder = (event) => {
       :key="col.field"
     ></Column>
   </DataTable>
+
+  <Toast position="top-center" />
 </template>
 
 <style scoped>

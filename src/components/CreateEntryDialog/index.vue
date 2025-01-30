@@ -1,11 +1,77 @@
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputNumber from "primevue/inputnumber";
 import Divider from "primevue/divider";
+import { useToast } from "primevue/usetoast";
+import { usePeopleStore } from "../../store/people";
+
+const toast = useToast();
+const peopleStore = usePeopleStore();
 
 const visible = ref(false);
+const num_of_people = ref(0);
+const disableButton = ref(false);
+
+console.log(disableButton?.value, visible);
+
+const disableButtonHandler = computed(() => {
+  disableButton.value = !disableButton.value;
+});
+
+const createUsers = (e) => {
+  console.log(num_of_people?.value);
+  if (num_of_people?.value < 20 || num_of_people?.value > 100) {
+    toast.add({
+      severity: "error",
+      summary: "Please enter a digit between 20 to 100",
+      // detail: "Please enter a digit between 20 to 100",
+      life: 3000,
+    });
+  } else {
+    // disableButton.value = true;
+    // await setTimeout(() => {
+    //   const arr = [];
+
+    //   for (let i = 0; i < Number(num_of_people?.value); i++) {
+    //     arr.push({
+    //       name: "abc",
+    //       potatoes: Math.floor(Math.random() * 100),
+    //       email: "abc@gmail.com",
+    //     });
+    //   }
+    //   peopleStore?.addPeopleList(arr);
+    //   visible.value = true;
+    // }, 5000);
+    // disableButton.value = false;
+
+    disableButton.value = true;
+    // countdown.value = 5; // Reset countdown
+
+    const interval = setInterval(() => {
+      // if (countdown.value === 0) {
+      //   clearInterval(interval);
+      //   disableButton.value = false;
+      // }
+
+      const arr = [];
+
+      for (let i = 0; i < Number(num_of_people?.value); i++) {
+        arr.push({
+          name: "abc",
+          potatoes: Math.floor(Math.random() * 100),
+          email: "abc@gmail.com",
+        });
+      }
+      peopleStore?.addPeopleList(arr);
+      clearInterval(interval);
+      visible.value = true;
+    }, 5000);
+
+    disableButton.value = false;
+  }
+};
 </script>
 
 <template>
@@ -36,13 +102,7 @@ const visible = ref(false);
         <label for="email" :style="{ fontWeight: 400, fontSize: 13 }"
           >Enter a number of how many people you want to add to the list.</label
         >
-        <InputNumber
-          v-model="value4"
-          inputId="minmax"
-          :min="20"
-          :max="100"
-          fluid
-        />
+        <InputNumber v-model="num_of_people" inputId="minmax" fluid />
       </div>
 
       <Divider />
@@ -62,17 +122,17 @@ const visible = ref(false);
             >
           </Button>
           <Button
-            label="Save"
             outlined
             severity="secondary"
-            @click="visible = false"
+            @click="createUsers"
             :style="{
               height: 40,
-              background: '#FF8D00',
+              background: !disableButton ? '#FF8D00' : 'gray',
               borderRadius: 5,
             }"
+            :disabled="disableButton"
             ><span :style="{ padding: '12px 22px', color: 'white' }"
-              >Save</span
+              >Start</span
             ></Button
           >
         </div>

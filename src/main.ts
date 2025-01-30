@@ -3,6 +3,11 @@ import "./style.css";
 import App from "./App.vue";
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
+import ToastService from "primevue/toastservice";
+
+import { createPinia } from "pinia";
+
+const pinia = createPinia();
 
 const themeConfig = {
   preset: Aura,
@@ -13,4 +18,8 @@ const themeConfig = {
   },
 };
 
-createApp(App).use(PrimeVue, { theme: themeConfig }).mount("#app");
+createApp(App)
+  .use(PrimeVue, { theme: themeConfig })
+  .use(pinia)
+  .use(ToastService)
+  .mount("#app");
