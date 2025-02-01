@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputNumber from "primevue/inputnumber";
@@ -7,18 +7,16 @@ import Divider from "primevue/divider";
 import { useToast } from "primevue/usetoast";
 import { usePeopleStore } from "../../store/people";
 
+import { generateRandomText } from "../../utils/generateText";
+
 const toast = useToast();
-const peopleStore = usePeopleStore();
+const people = usePeopleStore();
 
 const visible = ref(false);
 const num_of_people = ref(0);
 const disableButton = ref(false);
 
 console.log(disableButton?.value, visible);
-
-const disableButtonHandler = computed(() => {
-  disableButton.value = !disableButton.value;
-});
 
 const createUsers = (e) => {
   console.log(num_of_people?.value);
@@ -30,46 +28,45 @@ const createUsers = (e) => {
       life: 3000,
     });
   } else {
-    // disableButton.value = true;
-    // await setTimeout(() => {
+    const arr = [];
+
+    for (let i = 0; i < Number(num_of_people?.value); i++) {
+      arr.push({
+        name: generateRandomText(10),
+        potatoes: Math.floor(Math.random() * 100),
+        tag: "customers",
+        email: `${generateRandomText(10)}@${generateRandomText(5)}.com`,
+        location: "Lithuania",
+      });
+    }
+    people?.addPeopleList(arr);
+
+    // countdown.value = 5; // Reset countdown
+
+    // const interval = setInterval(() => {
+    //   // if (countdown.value === 0) {
+    //   //   clearInterval(interval);
+    //   //   disableButton.value = false;
+    //   // }
+
     //   const arr = [];
 
     //   for (let i = 0; i < Number(num_of_people?.value); i++) {
     //     arr.push({
-    //       name: "abc",
+    //       name: generateRandomText(10),
     //       potatoes: Math.floor(Math.random() * 100),
-    //       email: "abc@gmail.com",
+    //       email: `${generateRandomText(10)}@${generateRandomText(5)}.com`,
     //     });
     //   }
     //   peopleStore?.addPeopleList(arr);
+    //   clearInterval(interval);
     //   visible.value = true;
     // }, 5000);
-    // disableButton.value = false;
 
-    disableButton.value = true;
-    // countdown.value = 5; // Reset countdown
+    visible.value = false;
+    people.toggleRunningState(true);
 
-    const interval = setInterval(() => {
-      // if (countdown.value === 0) {
-      //   clearInterval(interval);
-      //   disableButton.value = false;
-      // }
-
-      const arr = [];
-
-      for (let i = 0; i < Number(num_of_people?.value); i++) {
-        arr.push({
-          name: "abc",
-          potatoes: Math.floor(Math.random() * 100),
-          email: "abc@gmail.com",
-        });
-      }
-      peopleStore?.addPeopleList(arr);
-      clearInterval(interval);
-      visible.value = true;
-    }, 5000);
-
-    disableButton.value = false;
+    people.startTimer();
   }
 };
 </script>
@@ -130,7 +127,6 @@ const createUsers = (e) => {
               background: !disableButton ? '#FF8D00' : 'gray',
               borderRadius: 5,
             }"
-            :disabled="disableButton"
             ><span :style="{ padding: '12px 22px', color: 'white' }"
               >Start</span
             ></Button

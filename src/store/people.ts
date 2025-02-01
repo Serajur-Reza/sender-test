@@ -17,11 +17,17 @@ import { ref } from "vue";
 export const usePeopleStore = defineStore("counter", {
   state: () => ({
     people: [],
+    isRunning: false,
+    secondsElapsed: 0,
+    timerInterval: null,
   }),
   getters: {
     returnPeopleList(state) {
       // state.people = state.people.sort((a, b) => b?.potatoes - a?.potatoes);
       return state.people;
+    },
+    isRunningState(state) {
+      return state.isRunning;
     },
   },
 
@@ -32,6 +38,30 @@ export const usePeopleStore = defineStore("counter", {
       // this.people.sort((a, b) => b?.potatoes - a?.potatoes);
 
       console.log(this.people);
+    },
+    setPeopleList(payload) {
+      this.people = payload;
+      // return state.people;
+    },
+
+    toggleRunningState(payload) {
+      this.isRunning = payload;
+    },
+
+    startTimer() {
+      this.timerInterval = setInterval(() => {
+        this.secondsElapsed++;
+      }, 1000);
+    },
+
+    pauseTimer() {
+      clearInterval(this.timerInterval);
+    },
+
+    formattedTime() {
+      const minutes = Math.floor(this.secondsElapsed / 60);
+      const seconds = this.secondsElapsed % 60;
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
     },
   },
 });
